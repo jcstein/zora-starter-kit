@@ -10,10 +10,11 @@ import {
   configureChains,
   createClient,
   WagmiConfig,
+  chain
 } from 'wagmi';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 import { Chain } from 'wagmi/chains';
-
+import { publicProvider } from 'wagmi/providers/public';
 
 const taroChain: Chain = {
   id: 1582,
@@ -34,11 +35,12 @@ const taroChain: Chain = {
 };
 
 const { provider, chains } = configureChains(
-  [taroChain],
+  [taroChain, chain.goerli],
   [
     jsonRpcProvider({
-      rpc: chain => ({ http: chain.rpcUrls.default.http[0] }),
+      rpc: chain => ({ http: chain.rpcUrls?.default?.http?.[0] }),
     }),
+    publicProvider(),
   ]
 );
 
