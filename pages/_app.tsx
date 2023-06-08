@@ -7,19 +7,38 @@ import {
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit';
 import {
-  chain,
   configureChains,
   createClient,
   WagmiConfig,
 } from 'wagmi';
-import { alchemyProvider } from 'wagmi/providers/alchemy';
-import { publicProvider } from 'wagmi/providers/public';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
+import { Chain } from 'wagmi/chains';
 
-const { chains, provider } = configureChains(
-  [chain.mainnet, chain.goerli],
+
+const taroChain: Chain = {
+  id: 1582,
+  name: 'Taro testnet',
+  network: 'taro',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Taro',
+    symbol: 'gETH',
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://taro-testnet.calderachain.xyz/http'],
+      webSocket: ['wss://taro-testnet.calderachain.xyz/ws']
+    },
+  },
+  testnet: false,
+};
+
+const { provider, chains } = configureChains(
+  [taroChain],
   [
-    // alchemyProvider({ alchemyId: process.env.NEXT_PUBLIC_ALCHMEY_ID }),
-    publicProvider()
+    jsonRpcProvider({
+      rpc: chain => ({ http: chain.rpcUrls.default.http[0] }),
+    }),
   ]
 );
 
